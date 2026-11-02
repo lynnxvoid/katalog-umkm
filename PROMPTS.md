@@ -55,15 +55,14 @@ Baca docs/user-stories.md bagian US-02.
 
 Ubah app/produk/[id]/page.jsx supaya mengambil satu produk dari tabel "produk" di Supabase berdasarkan id di URL, di sisi server, memakai koneksi Supabase yang sudah dibuat di lib/supabase. Kalau produk tidak ditemukan, panggil notFound(). Jangan ubah tampilannya. Hapus CatatanBelumAktif dari halaman ini, tapi biarkan tombol WhatsApp.
 **Hasil:**
-Bisa mengubah deskrpsi secara live
-
-**Perbaikan:**
 File yang Diubah
 app/produk/[id]/page.jsx:
 Mengambil data produk langsung dari tabel produk di Supabase berdasarkan id pada URL menggunakan koneksi buatClientServer() dari lib/supabase/server.js.
 Menggunakan notFound() dari next/navigation jika data produk tidak ditemukan atau terjadi error pencarian.
 Menghapus komponen CatatanBelumAktif dan ketergantungan pada lib/data-contoh.js.
 Mempertahankan komponen TombolWhatsApp dan seluruh tata letak tampilan detail produk.
+
+**Perbaikan:**
 
 ## US-03 Pesan via WhatsApp
 
@@ -72,9 +71,6 @@ Baca docs/rancangan-teknis.md bagian "Pesan WhatsApp (US-03)".
 
 Ubah components/TombolWhatsApp.jsx menjadi tautan yang membuka https://wa.me/ ke nomor di lib/toko.js, dengan pesan otomatis berisi nama dan harga produk dalam format rupiah. Pesan di-encode dengan encodeURIComponent dan dibuka di tab baru. Pertahankan tampilan tombolnya. Hapus CatatanBelumAktif yang menyebut US-03 di halaman detail produk.
 **Hasil:**
-Bisa mengerahkan ke tautan wa langsung direct
-
-**Perbaikan:**
 File yang Diubah
 components/TombolWhatsApp.jsx:
 Mengubah elemen <button> menjadi elemen tautan <a> dengan atribut target="\_blank" dan rel="noopener noreferrer".
@@ -84,6 +80,8 @@ Mempertahankan styling dan kelas tampilan tombol yang sudah ada.
 app/produk/[id]/page.jsx:
 Memastikan komponen CatatanBelumAktif yang merujuk pada US-03 sudah dihapus dari halaman detail produk.
 
+**Perbaikan:**
+
 ## US-04 Login admin
 
 **Prompt:**
@@ -91,8 +89,6 @@ Baca AGENTS.md bagian aturan keamanan dan docs/user-stories.md bagian US-04.
 
 Buat login admin memakai Supabase Auth (email dan password) dengan @supabase/ssr dan cookie, memakai SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY. Login diproses dengan Server Action di app/admin/actions.js dan disambungkan ke form di app/admin/login/page.jsx. Login berhasil diarahkan ke /admin; login gagal menampilkan pesan error yang jelas di halaman login. Buat juga tombol "Keluar" di components/NavAdmin.jsx berfungsi: mengakhiri sesi lalu kembali ke /admin/login. Jangan ubah tampilan. Hapus CatatanBelumAktif dari halaman login.
 **Hasil:**
-Bisa login dengan akun yang benar, dan tidak bisa login dengan akun yang salah
-**Perbaikan:**
 File yang Dibuat dan Diubah
 lib/supabase/server.js:
 Menambahkan fungsi buatClientSesi menggunakan @supabase/ssr (createServerClient) dengan SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY.
@@ -106,6 +102,7 @@ Menampilkan pesan error di bawah judul jika login gagal.
 Menghapus komponen CatatanBelumAktif tanpa mengubah tata letak form.
 components/NavAdmin.jsx:
 Menyambungkan tombol "Keluar" ke Server Action keluar dengan form action tanpa mengubah tampilan atau posisinya.
+**Perbaikan:**
 
 ## US-05 Ganti password
 
@@ -114,10 +111,6 @@ Baca docs/user-stories.md bagian US-05.
 
 Buat Server Action ganti password di app/admin/actions.js untuk admin yang sedang login, memakai Supabase Auth. Validasi di server: password baru minimal 8 karakter dan harus sama dengan konfirmasi. Tampilkan pesan berhasil atau pesan error yang jelas di halaman. Sambungkan ke form di app/admin/password/page.jsx tanpa mengubah tampilannya. Hapus CatatanBelumAktif dari halaman ini.
 **Hasil:**
-berhasil melakukan ganti password
-**Perbaikan:**
-Pekerjaan untuk US-05 (Ganti password) telah selesai.
-
 File yang Diubah
 app/admin/actions.js:
 Menambahkan Server Action gantiPassword.
@@ -129,13 +122,24 @@ app/admin/password/page.jsx:
 Menyambungkan form ke Server Action gantiPassword dengan useActionState.
 Menampilkan umpan balik berupa pesan error (jika validasi gagal / terjadi error) atau pesan sukses (jika password berhasil diperbarui).
 Menghapus komponen CatatanBelumAktif tanpa mengubah tata letak atau tampilan form.
+**Perbaikan:**
 
 ## US-06 Proteksi halaman admin
 
 **Prompt:**
+Baca AGENTS.md aturan keamanan nomor 3 dan 4, dan docs/user-stories.md bagian US-06.
 
+Buat file proxy.js di root proyek (Next.js 16). Semua rute /admin kecuali /admin/login wajib login dengan Supabase Auth; kalau belum login, alihkan ke /admin/login. Pastikan juga setiap Server Action yang mengubah data memeriksa login di server. Hapus CatatanBelumAktif dari halaman /admin.
 **Hasil:**
-
+File yang Dibuat dan Diubah
+proxy.js (di root proyek):
+Menerapkan fungsi proxy routing (pengganti middleware.js di Next.js 16) untuk rute matcher: ["/admin/:path*"].
+Menginisialisasi Supabase client dengan @supabase/ssr dan membaca sesi user via supabase.auth.getUser().
+Mengalihkan pengunjung yang belum login ke /admin/login jika mencoba mengakses rute /admin mana pun (kecuali halaman /admin/login itu sendiri).
+app/admin/page.jsx:
+Menghapus komponen CatatanBelumAktif dari halaman admin.
+app/admin/actions.js:
+Memastikan setiap Server Action yang mengubah data (seperti gantiPassword) memvalidasi sesi admin aktif di server (auth.getUser()) sebelum memproses permintaan.
 **Perbaikan:**
 
 ## Debugging dan fitur bonus
