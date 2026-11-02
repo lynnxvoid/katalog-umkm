@@ -87,10 +87,25 @@ Memastikan komponen CatatanBelumAktif yang merujuk pada US-03 sudah dihapus dari
 ## US-04 Login admin
 
 **Prompt:**
+Baca AGENTS.md bagian aturan keamanan dan docs/user-stories.md bagian US-04.
 
+Buat login admin memakai Supabase Auth (email dan password) dengan @supabase/ssr dan cookie, memakai SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY. Login diproses dengan Server Action di app/admin/actions.js dan disambungkan ke form di app/admin/login/page.jsx. Login berhasil diarahkan ke /admin; login gagal menampilkan pesan error yang jelas di halaman login. Buat juga tombol "Keluar" di components/NavAdmin.jsx berfungsi: mengakhiri sesi lalu kembali ke /admin/login. Jangan ubah tampilan. Hapus CatatanBelumAktif dari halaman login.
 **Hasil:**
-
+Bisa login dengan akun yang benar, dan tidak bisa login dengan akun yang salah
 **Perbaikan:**
+File yang Dibuat dan Diubah
+lib/supabase/server.js:
+Menambahkan fungsi buatClientSesi menggunakan @supabase/ssr (createServerClient) dengan SUPABASE_URL dan SUPABASE_PUBLISHABLE_KEY.
+Mengelola cookie sesi admin (getAll & setAll) melalui next/headers.
+app/admin/actions.js:
+Membuat Server Action login: memvalidasi input, melakukan autentikasi dengan signInWithPassword, mengembalikan pesan error yang jelas jika gagal, dan mengarahkan ke /admin jika berhasil.
+Membuat Server Action keluar: memanggil signOut untuk mengakhiri sesi autentikasi dan mengarahkan kembali ke /admin/login.
+app/admin/login/page.jsx:
+Menyambungkan form ke Server Action login menggunakan useActionState.
+Menampilkan pesan error di bawah judul jika login gagal.
+Menghapus komponen CatatanBelumAktif tanpa mengubah tata letak form.
+components/NavAdmin.jsx:
+Menyambungkan tombol "Keluar" ke Server Action keluar dengan form action tanpa mengubah tampilan atau posisinya.
 
 ## US-05 Ganti password
 
