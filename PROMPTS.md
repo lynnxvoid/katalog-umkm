@@ -55,29 +55,34 @@ Baca docs/user-stories.md bagian US-02.
 
 Ubah app/produk/[id]/page.jsx supaya mengambil satu produk dari tabel "produk" di Supabase berdasarkan id di URL, di sisi server, memakai koneksi Supabase yang sudah dibuat di lib/supabase. Kalau produk tidak ditemukan, panggil notFound(). Jangan ubah tampilannya. Hapus CatatanBelumAktif dari halaman ini, tapi biarkan tombol WhatsApp.
 **Hasil:**
-Pekerjaan untuk US-02 (Detail produk) telah selesai.
+Bisa mengubah deskrpsi secara live
 
+**Perbaikan:**
 File yang Diubah
 app/produk/[id]/page.jsx:
 Mengambil data produk langsung dari tabel produk di Supabase berdasarkan id pada URL menggunakan koneksi buatClientServer() dari lib/supabase/server.js.
 Menggunakan notFound() dari next/navigation jika data produk tidak ditemukan atau terjadi error pencarian.
 Menghapus komponen CatatanBelumAktif dan ketergantungan pada lib/data-contoh.js.
 Mempertahankan komponen TombolWhatsApp dan seluruh tata letak tampilan detail produk.
-**Perbaikan:**
-Cara Mengetes
-Buka salah satu produk dari katalog di browser (misalnya http://localhost:3000/produk/1).
-Pastikan informasi foto, kategori, nama produk, harga rupiah, dan deskripsi tampil sesuai data di database.
-Pastikan tombol WhatsApp tetap ada di halaman.
-Coba akses ID produk yang tidak ada di database (misalnya http://localhost:3000/produk/999999 atau http://localhost:3000/produk/abc).
-Pastikan halaman beralih ke halaman 404 (Tidak Ditemukan).
 
 ## US-03 Pesan via WhatsApp
 
 **Prompt:**
+Baca docs/rancangan-teknis.md bagian "Pesan WhatsApp (US-03)".
 
+Ubah components/TombolWhatsApp.jsx menjadi tautan yang membuka https://wa.me/ ke nomor di lib/toko.js, dengan pesan otomatis berisi nama dan harga produk dalam format rupiah. Pesan di-encode dengan encodeURIComponent dan dibuka di tab baru. Pertahankan tampilan tombolnya. Hapus CatatanBelumAktif yang menyebut US-03 di halaman detail produk.
 **Hasil:**
+Bisa mengerahkan ke tautan wa langsung direct
 
 **Perbaikan:**
+File yang Diubah
+components/TombolWhatsApp.jsx:
+Mengubah elemen <button> menjadi elemen tautan <a> dengan atribut target="\_blank" dan rel="noopener noreferrer".
+Menghubungkan ke https://wa.me/<nomor>?text=<pesan> menggunakan nomor WhatsApp dari lib/toko.js.
+Mengisi teks pesan secara otomatis dengan nama produk dan harga terformat rupiah (formatRupiah), yang di-encode menggunakan encodeURIComponent.
+Mempertahankan styling dan kelas tampilan tombol yang sudah ada.
+app/produk/[id]/page.jsx:
+Memastikan komponen CatatanBelumAktif yang merujuk pada US-03 sudah dihapus dari halaman detail produk.
 
 ## US-04 Login admin
 
