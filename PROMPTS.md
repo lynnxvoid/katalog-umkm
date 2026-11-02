@@ -110,10 +110,25 @@ Menyambungkan tombol "Keluar" ke Server Action keluar dengan form action tanpa m
 ## US-05 Ganti password
 
 **Prompt:**
+Baca docs/user-stories.md bagian US-05.
 
+Buat Server Action ganti password di app/admin/actions.js untuk admin yang sedang login, memakai Supabase Auth. Validasi di server: password baru minimal 8 karakter dan harus sama dengan konfirmasi. Tampilkan pesan berhasil atau pesan error yang jelas di halaman. Sambungkan ke form di app/admin/password/page.jsx tanpa mengubah tampilannya. Hapus CatatanBelumAktif dari halaman ini.
 **Hasil:**
-
+berhasil melakukan ganti password
 **Perbaikan:**
+Pekerjaan untuk US-05 (Ganti password) telah selesai.
+
+File yang Diubah
+app/admin/actions.js:
+Menambahkan Server Action gantiPassword.
+Memeriksa sesi admin yang sedang aktif di server menggunakan supabase.auth.getUser().
+Memvalidasi password baru minimal 8 karakter dan memastikan konfirmasi password cocok.
+Memperbarui password admin melalui supabase.auth.updateUser({ password }).
+Mengembalikan pesan berhasil atau pesan error yang jelas.
+app/admin/password/page.jsx:
+Menyambungkan form ke Server Action gantiPassword dengan useActionState.
+Menampilkan umpan balik berupa pesan error (jika validasi gagal / terjadi error) atau pesan sukses (jika password berhasil diperbarui).
+Menghapus komponen CatatanBelumAktif tanpa mengubah tata letak atau tampilan form.
 
 ## US-06 Proteksi halaman admin
 
